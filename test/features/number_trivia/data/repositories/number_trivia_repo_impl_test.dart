@@ -48,3 +48,9 @@ void main() {
     });
   });
 }
+
+// completed till 5 module , new: mockito update now it's generator for either
+// there are multiple interfaces
+// none modules are dependent on each other
+// each usages abstract classes to define the contract
+// domain give the contract while data implements those contract
