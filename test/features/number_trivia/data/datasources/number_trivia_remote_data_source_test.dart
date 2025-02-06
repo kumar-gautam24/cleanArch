@@ -28,7 +28,7 @@ void main() {
     test('should perform a GET request on a URL with number endpoint',
         () async {
       // arrange
-      when(mockDio.get(any)).thenAnswer(
+      when(mockDio.get(captureAny,options: anyNamed('options'),)).thenAnswer(
         (_) async => Response(
           data: json.decode(fixture('trivia.json')),
           statusCode: 200,
@@ -38,7 +38,10 @@ void main() {
       // act
       await dataSource.getConcreteNumberTrivia(tNumber);
       // assert
-      verify(mockDio.get(any));
+      verify(mockDio.get(
+        captureAny,
+        options: anyNamed('options'),
+      ));
     });
 
     test('should return NumberTrivia when response code is 200', () async {
