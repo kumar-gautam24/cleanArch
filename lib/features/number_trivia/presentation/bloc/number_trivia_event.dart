@@ -6,3 +6,14 @@ abstract class NumberTriviaEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class GetConcreteNumberTriviaEvent extends NumberTriviaEvent {
+  final String numberString;
+
+  const GetConcreteNumberTriviaEvent(this.numberString);
+
+  @override
+  List<Object> get props => [numberString];
+}
+
+class GetRandomNumberTriviaEvent extends NumberTriviaEvent {}

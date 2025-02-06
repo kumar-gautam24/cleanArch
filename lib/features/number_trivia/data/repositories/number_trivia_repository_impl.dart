@@ -44,6 +44,7 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepo {
       } on ServerException {
         return Left(ServerFailure());
       } on DioException {
+        //  throw ServerException();
         return Left(ServerFailure());
       }
     } else {
@@ -53,6 +54,8 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepo {
       } on CacheException {
         return Left(CacheFailure());
       } on DioException {
+        // throw CatchException();
+        // TODO:  Implement CacheException
         return Left(CacheFailure());
       }
     }
