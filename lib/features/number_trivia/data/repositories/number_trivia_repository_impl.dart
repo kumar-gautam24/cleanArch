@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 
 import 'package:trivia/core/errors/error.dart';
 import 'package:trivia/core/errors/execption.dart';
@@ -42,12 +43,16 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepo {
         return Right(remoteTrivia);
       } on ServerException {
         return Left(ServerFailure());
+      } on DioException {
+        return Left(ServerFailure());
       }
     } else {
       try {
         final localTrivia = await localDataSource.getLastNumberTrivia();
         return Right(localTrivia);
       } on CacheException {
+        return Left(CacheFailure());
+      } on DioException {
         return Left(CacheFailure());
       }
     }

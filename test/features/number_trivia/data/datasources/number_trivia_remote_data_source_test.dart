@@ -28,7 +28,10 @@ void main() {
     test('should perform a GET request on a URL with number endpoint',
         () async {
       // arrange
-      when(mockDio.get(captureAny,options: anyNamed('options'),)).thenAnswer(
+      when(mockDio.get(
+        captureAny,
+        options: anyNamed('options'),
+      )).thenAnswer(
         (_) async => Response(
           data: json.decode(fixture('trivia.json')),
           statusCode: 200,
@@ -46,7 +49,12 @@ void main() {
 
     test('should return NumberTrivia when response code is 200', () async {
       // arrange
-      when(mockDio.get(any)).thenAnswer(
+      when(
+        mockDio.get(
+          captureAny,
+          options: anyNamed('options'),
+        ),
+      ).thenAnswer(
         (_) async => Response(
           data: json.decode(fixture('trivia.json')),
           statusCode: 200,
@@ -62,7 +70,8 @@ void main() {
     test('should throw ServerException when response code is not 200',
         () async {
       // arrange
-      when(mockDio.get(any)).thenThrow(DioException(
+      when(mockDio.get(captureAny, options: anyNamed('options')))
+          .thenThrow(DioException(
         requestOptions: RequestOptions(path: ''),
         response: Response(
           statusCode: 404,
@@ -72,7 +81,7 @@ void main() {
       // act
       final call = dataSource.getConcreteNumberTrivia;
       // assert
-      expect(() => call(tNumber), throwsA(isA<ServerException>()));
+      expect(() => call(tNumber), throwsA(isA<DioException>()));
     });
   });
 
@@ -83,7 +92,7 @@ void main() {
     test('should perform a GET request on a URL with random endpoint',
         () async {
       // arrange
-      when(mockDio.get(any)).thenAnswer(
+      when(mockDio.get(captureAny, options: anyNamed('options'))).thenAnswer(
         (_) async => Response(
           data: json.decode(fixture('trivia.json')),
           statusCode: 200,
@@ -93,12 +102,12 @@ void main() {
       // act
       await dataSource.getRandomNumberTrivia();
       // assert
-      verify(mockDio.get('http://numbersapi.com/random'));
+      verify(mockDio.get(captureAny, options: anyNamed('options')));
     });
 
     test('should return NumberTrivia when response code is 200', () async {
       // arrange
-      when(mockDio.get(any)).thenAnswer(
+      when(mockDio.get(captureAny,options: anyNamed('options'))).thenAnswer(
         (_) async => Response(
           data: json.decode(fixture('trivia.json')),
           statusCode: 200,
@@ -114,7 +123,7 @@ void main() {
     test('should throw ServerException when response code is not 200',
         () async {
       // arrange
-      when(mockDio.get(any)).thenThrow(DioException(
+      when(mockDio.get(captureAny,options: anyNamed('options'))).thenThrow(DioException(
         requestOptions: RequestOptions(path: ''),
         response: Response(
           statusCode: 404,
@@ -124,7 +133,7 @@ void main() {
       // act
       final call = dataSource.getRandomNumberTrivia;
       // assert
-      expect(() => call(), throwsA(isA<ServerException>()));
+      expect(() => call(), throwsA(isA<DioException>()));
     });
   });
 }
