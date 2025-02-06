@@ -26,7 +26,7 @@ class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
   @override
   Future<NumberTriviaModel> getRandomNumberTrivia() async {
     final response = await client.get(
-      'http://numbersapi.con/random',
+      'http://numbersapi.com/random',
       options: Options(
         headers: {'Content-Type': 'application/json'},
       ),
