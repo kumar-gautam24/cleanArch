@@ -44,9 +44,13 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
 
   Future<void> _onGetRandomNumberTrivia(
       GetRandomNumberTriviaEvent event, Emitter<NumberTriviaState> emit) async {
+    print('GetRandomNumberTriviaEvent received');
     emit(NumberTriviaLoading());
     final result = await getRandomNumberTrivia(NoParams());
+    print('getRandomNumberTrivia called');
     emit(_mapResultToState(result));
+    print('State emitted: ${_mapResultToState(result)}');
+  
   }
 
   NumberTriviaState _mapResultToState(Either<Failure, NumberTrivia> result) {

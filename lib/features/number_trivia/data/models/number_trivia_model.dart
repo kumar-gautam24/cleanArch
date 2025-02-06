@@ -15,4 +15,7 @@ class NumberTriviaModel extends NumberTrivia {
       'number': number,
     };
   }
+  NumberTrivia toEntity() {
+    return NumberTrivia(number: number, text: text);
+  }
 }

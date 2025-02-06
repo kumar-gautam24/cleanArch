@@ -10,6 +10,7 @@ import 'package:trivia/features/number_trivia/domain/entities/number_trivia.dart
 import '../../../../core/network/network_info.dart';
 import '../../domain/repositories/number_trivia_repo.dart';
 import '../datasources/number_trivia_remote_data_source.dart';
+import '../models/number_trivia_model.dart';
 
 class NumberTriviaRepositoryImpl implements NumberTriviaRepo {
   final NumberTriviaRemoteDataSource remoteDataSource;
@@ -35,11 +36,11 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepo {
   }
 
   Future<Either<Failure, NumberTrivia>> _getTrivia(
-      Function getConcreteOrRandom) async {
+      Future<NumberTrivia> Function() getConcreteOrRandom) async {
     if (await networkInfo.isConnected) {
       try {
         final remoteTrivia = await getConcreteOrRandom();
-        localDataSource.cacheNumberTrivia(remoteTrivia);
+        localDataSource.cacheNumberTrivia(remoteTrivia as NumberTriviaModel);
         return Right(remoteTrivia);
       } on ServerException {
         return Left(ServerFailure());
@@ -55,7 +56,7 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepo {
         return Left(CacheFailure());
       } on DioException {
         // throw CatchException();
-        // TODO:  Implement CacheException
+        // :  Implement CacheException
         return Left(CacheFailure());
       }
     }

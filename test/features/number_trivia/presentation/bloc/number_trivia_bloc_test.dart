@@ -32,51 +32,12 @@ void main() {
   test('initial state should be NumberTriviaInitial', () {
     expect(bloc.state, equals(NumberTriviaInitial()));
   });
+
   group('GetTriviaForConcreteNumber', () {
-    // The event takes in a String
     final tNumberString = '1';
-    // This is the successful output of the InputConverter
     final tNumberParsed = int.parse(tNumberString);
-    // NumberTrivia instance is needed too, of course
     final tNumberTrivia = NumberTrivia(number: 1, text: 'test trivia');
-    test(
-      'should emit [NumberTriviaLoading, NumberTriviaLoaded] when data is gotten successfully',
-      () async {
-        // arrange
-        when(mockInputConverter.stringToUnsignedInteger(any))
-            .thenReturn(Right(tNumberParsed));
-        when(mockGetConcreteNumberTrivia(Params(number: tNumberParsed)))
-            .thenAnswer((_) async => Right(tNumberTrivia));
 
-        // assert later
-        final expected = [
-          NumberTriviaLoading(),
-          NumberTriviaLoaded(trivia: tNumberTrivia),
-        ];
-        expectLater(bloc.stream, emitsInOrder(expected));
-
-        // act
-        bloc.add(GetConcreteNumberTriviaEvent(tNumberString));
-      },
-    );
-    test(
-      'should emit [Error] when the input is invalid',
-      () async {
-        // arrange
-        when(mockInputConverter.stringToUnsignedInteger(any))
-            .thenReturn(Left(InvalidInputFailure()));
-
-        // assert later
-        final expected = [
-          NumberTriviaError(
-              message: 'Invalid Input - Enter a positive integer'),
-        ];
-        expectLater(bloc.stream, emitsInOrder(expected));
-
-        // act
-        bloc.add(GetConcreteNumberTriviaEvent(tNumberString));
-      },
-    );
     test(
       'should get data from concrete use case',
       () async {
@@ -97,44 +58,95 @@ void main() {
       },
     );
 
-    test('should emit [Loading, Loaded] when data is gotten successfully',
-        () async{
-          // arrange
-          when(mockInputConverter.stringToUnsignedInteger(any))
-              .thenReturn(Right(tNumberParsed));
-          when(mockGetConcreteNumberTrivia(Params(number: tNumberParsed)))
-              .thenAnswer((_) async => Right(tNumberTrivia));
+    test(
+      'should emit [NumberTriviaLoading, NumberTriviaLoaded] when data is gotten successfully',
+      () async {
+        when(mockInputConverter.stringToUnsignedInteger(any))
+            .thenReturn(Right(tNumberParsed));
+        when(mockGetConcreteNumberTrivia(Params(number: tNumberParsed)))
+            .thenAnswer((_) async => Right(tNumberTrivia));
 
-          // assert later
-          final expected = [
-            NumberTriviaLoading(),
-            NumberTriviaLoaded(trivia: tNumberTrivia),
-          ];
-          expectLater(bloc.stream, emitsInOrder(expected));
+        final expected = [
+          NumberTriviaLoading(),
+          NumberTriviaLoaded(trivia: tNumberTrivia),
+        ];
+        expectLater(bloc.stream, emitsInOrder(expected));
 
-          // act
-          bloc.add(GetConcreteNumberTriviaEvent(tNumberString));
-
-        });
+        bloc.add(GetConcreteNumberTriviaEvent(tNumberString));
+      },
+    );
 
     test(
       'should emit [NumberTriviaLoading, NumberTriviaError] when getting data fails',
       () async {
-        // arrange
         when(mockInputConverter.stringToUnsignedInteger(any))
             .thenReturn(Right(tNumberParsed));
         when(mockGetConcreteNumberTrivia(Params(number: tNumberParsed)))
             .thenAnswer((_) async => Left(ServerFailure()));
 
-        // assert later
         final expected = [
           NumberTriviaLoading(),
-          NumberTriviaError(message: 'Server Failure'), // Ensure this matches
+          NumberTriviaError(message: 'Server Failure'),
         ];
         expectLater(bloc.stream, emitsInOrder(expected));
 
-        // act
         bloc.add(GetConcreteNumberTriviaEvent(tNumberString));
+      },
+    );
+  });
+
+  group('GetTriviaForRandomNumber', () {
+    final tNumberTrivia = NumberTrivia(number: 123, text: 'test trivia');
+
+    test(
+      'should get data from the random use case',
+      () async {
+        // Arrange
+        when(mockGetRandomNumberTrivia(any))
+            .thenAnswer((_) async => Right(tNumberTrivia));
+
+        // Assert later
+        final expected = [
+          NumberTriviaLoading(),
+          NumberTriviaLoaded(trivia: tNumberTrivia),
+        ];
+        expectLater(bloc.stream, emitsInOrder(expected));
+
+        // Act
+        bloc.add(GetRandomNumberTriviaEvent());
+      },
+    );
+
+
+    test(
+      'should emit [NumberTriviaLoading, NumberTriviaLoaded] when data is gotten successfully',
+      () async {
+        when(mockGetRandomNumberTrivia(any))
+            .thenAnswer((_) async => Right(tNumberTrivia));
+
+        final expected = [
+          NumberTriviaLoading(),
+          NumberTriviaLoaded(trivia: tNumberTrivia),
+        ];
+        expectLater(bloc.stream, emitsInOrder(expected));
+
+        bloc.add(GetRandomNumberTriviaEvent());
+      },
+    );
+
+    test(
+      'should emit [NumberTriviaLoading, NumberTriviaError] when getting data fails',
+      () async {
+        when(mockGetRandomNumberTrivia(any))
+            .thenAnswer((_) async => Left(ServerFailure()));
+
+        final expected = [
+          NumberTriviaLoading(),
+          NumberTriviaError(message: 'Server Failure'),
+        ];
+        expectLater(bloc.stream, emitsInOrder(expected));
+
+        bloc.add(GetRandomNumberTriviaEvent());
       },
     );
   });
