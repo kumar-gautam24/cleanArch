@@ -8,7 +8,6 @@ import '../../domain/entities/number_trivia.dart';
 import '../../domain/usecases/get_concerete_number_trivia.dart';
 import '../../domain/usecases/get_random_number_trivia.dart';
 
-
 part 'number_trivia_event.dart';
 part 'number_trivia_state.dart';
 
@@ -22,41 +21,49 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
     required this.getRandomNumberTrivia,
     required this.inputConverter,
   }) : super(NumberTriviaInitial()) {
-    on<GetConcreteNumberTriviaEvent>(_onGetConcreteNumberTrivia);
-    on<GetRandomNumberTriviaEvent>(_onGetRandomNumberTrivia);
+    on<GetConcreteNumberTriviaEvent>(_onGetTriviaForConcreteNumber);
+    on<GetRandomNumberTriviaEvent>(_onGetTriviaForRandomNumber);
   }
 
-  Future<void> _onGetConcreteNumberTrivia(GetConcreteNumberTriviaEvent event,
-      Emitter<NumberTriviaState> emit) async {
+  Future<void> _onGetTriviaForConcreteNumber(
+    GetConcreteNumberTriviaEvent event,
+    Emitter<NumberTriviaState> emit,
+  ) async {
+    emit(NumberTriviaLoading());
     final inputEither =
         inputConverter.stringToUnsignedInteger(event.numberString);
 
-    inputEither.fold(
-      (failure) => emit(const NumberTriviaError(
-          message: 'Invalid Input - Enter a positive integer')),
-      (number) async {
-        emit(NumberTriviaLoading());
-        final result = await getConcreteNumberTrivia(Params(number: number));
-        emit(_mapResultToState(result));
+    await inputEither.fold(
+      (failure) async {
+        emit(const NumberTriviaError(message: 'Invalid Input'));
+      },
+      (integer) async {
+        final result = await getConcreteNumberTrivia(Params(number: integer));
+        await result.fold(
+          (failure) async {
+            emit(NumberTriviaError(message: _mapFailureToMessage(failure)));
+          },
+          (trivia) async {
+            emit(NumberTriviaLoaded(trivia: trivia));
+          },
+        );
       },
     );
   }
 
-  Future<void> _onGetRandomNumberTrivia(
-      GetRandomNumberTriviaEvent event, Emitter<NumberTriviaState> emit) async {
-    print('GetRandomNumberTriviaEvent received');
+  Future<void> _onGetTriviaForRandomNumber(
+    GetRandomNumberTriviaEvent event,
+    Emitter<NumberTriviaState> emit,
+  ) async {
     emit(NumberTriviaLoading());
     final result = await getRandomNumberTrivia(NoParams());
-    print('getRandomNumberTrivia called');
-    emit(_mapResultToState(result));
-    print('State emitted: ${_mapResultToState(result)}');
-  
-  }
-
-  NumberTriviaState _mapResultToState(Either<Failure, NumberTrivia> result) {
-    return result.fold(
-      (failure) => NumberTriviaError(message: _mapFailureToMessage(failure)),
-      (trivia) => NumberTriviaLoaded(trivia: trivia),
+    await result.fold(
+      (failure) async {
+        emit(NumberTriviaError(message: _mapFailureToMessage(failure)));
+      },
+      (trivia) async {
+        emit(NumberTriviaLoaded(trivia: trivia));
+      },
     );
   }
 
