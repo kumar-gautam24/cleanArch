@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
@@ -16,6 +18,18 @@ import 'features/number_trivia/presentation/bloc/number_trivia_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  final Dio dio = Dio();
+  dio.interceptors.add(
+    LogInterceptor(
+      request: true,
+      responseHeader: true,
+      logPrint: (value) => log(value.toString()),
+      responseBody: true,
+      requestBody: true,
+      requestHeader: true,
+      error: true,
+    ),
+  );
   //! Features - Number Trivia
   //Bloc
   sl.registerFactory(
@@ -50,7 +64,7 @@ Future<void> init() async {
   //! External
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
-  sl.registerLazySingleton(() => Dio());
+  sl.registerLazySingleton(() => dio);
   sl.registerLazySingleton(() => Connectivity());
 }
 //

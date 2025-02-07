@@ -17,9 +17,9 @@ class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
   @override
   Future<NumberTriviaModel> getConcreteNumberTrivia(int number) async {
     try {
-      if (kDebugMode) {
-        print('Calling API for number: $number');
-      } // Debug log
+      // if (kDebugMode) {
+      //   print('Calling API for number: $number');
+      // } // Debug log
       final response = await client.get(
         'http://numbersapi.com/$number',
         options: Options(
@@ -30,12 +30,12 @@ class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
         ),
       );
 
-      if (kDebugMode) {
-        print('Response status: ${response.statusCode}');
-      } // Debug log
-      if (kDebugMode) {
-        print('Response data: ${response.data}');
-      } // Debug log
+      // if (kDebugMode) {
+      //   print('Response status: ${response.statusCode}');
+      // } // Debug log
+      // if (kDebugMode) {
+      //   print('Response data: ${response.data}');
+      // } // Debug log
 
       if (response.statusCode == 200) {
         return NumberTriviaModel.fromJson(response.data);
@@ -43,18 +43,18 @@ class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
         throw ServerException();
       }
     } on DioException catch (e) {
-      if (kDebugMode) {
-        print('DioError: ${e.message}');
-      } // Debug log
+      // if (kDebugMode) {
+      //   print('DioError: ${e.message}');
+      // } // Debug log
       throw ServerException();
     }
   }
 
   @override
   Future<NumberTriviaModel> getRandomNumberTrivia() async {
-    if (kDebugMode) {
-      print('Calling API for random number');
-    } // Debug log
+    // if (kDebugMode) {
+    //   print('Calling API for random number');
+    // } // Debug log
     try {
       final response = await client.get(
         'http://numbersapi.com/random',
@@ -62,17 +62,17 @@ class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
           headers: {'Content-Type': 'application/json'},
         ),
       );
-      if (kDebugMode) {
-        print('Response status: ${response.statusCode}');
-      } // Debug log
-      if (kDebugMode) {
-        print('Response data: ${response.data}');
-      } //
+      // if (kDebugMode) {
+      //   print('Response status: ${response.statusCode}');
+      // } // Debug log
+      // if (kDebugMode) {
+      //   print('Response data: ${response.data}');
+      // } //
       return NumberTriviaModel.fromJson(response.data);
     } on DioException catch (e) {
-      if (kDebugMode) {
-        print('DioError: ${e.message}');
-      } // Debug log
+      // if (kDebugMode) {
+      //   print('DioError: ${e.message}');
+      // } // Debug log
       throw ServerException();
     }
   }
