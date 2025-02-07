@@ -1,4 +1,5 @@
-import 'package:dartz/dartz.dart';
+// ignore_for_file: type_literal_in_constant_pattern
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trivia/core/errors/error.dart';
