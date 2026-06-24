@@ -1,0 +1,8 @@
+android/**   linguist-vendored=true
+ios/**        linguist-vendored=true
+linux/**      linguist-vendored=true
+macos/**      linguist-vendored=true
+windows/**    linguist-vendored=true
+web/**        linguist-vendored=true
+*.cmake       linguist-generated=true
+*.g.dart      linguist-generated=true
